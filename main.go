@@ -4,7 +4,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"time"
+)
+
+const (
+	ProgramName = "qmcdump-go"
+	Version     = "0.1.0"
 )
 
 var (
@@ -12,6 +18,7 @@ var (
 )
 
 func main() {
+	Welcome()
 	go PrintSomething()
 	args := os.Args
 	if len(args) == 1 {
@@ -75,4 +82,9 @@ func PrintSomething() {
 		}
 		fmt.Println(s)
 	}
+}
+
+func Welcome() {
+	fmt.Printf("%s Version [%s]\n", ProgramName, Version)
+	fmt.Printf("System information: %s\n", fmt.Sprintf("OS [ %s ], Architecture [ %s ], go runtime Version [ %s ]", runtime.GOOS, runtime.GOARCH, runtime.Version()))
 }
