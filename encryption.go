@@ -27,8 +27,9 @@ func mapL(v int) byte {
 	}
 	if v <= 0 {
 		v = 0
-	} else {
-		v &= 0x7FFF
+	}
+	if v >= 0x7FFF {
+		v %= 0x7FFF
 	}
 	return key[(v*v+80923)&0xFF]
 }

@@ -33,7 +33,7 @@ func ConvertFile(in, out string) (bool, error) {
 	writer := bufio.NewWriter(outFile)
 	defer writer.Flush()
 
-	for offset := 0; ; offset += BUFFER_SIZE {
+	for offset := 0; ; {
 		// Reading data from input file
 		n, err := reader.Read(buffer)
 
@@ -43,6 +43,8 @@ func ConvertFile(in, out string) (bool, error) {
 
 		data := buffer[:n]
 		Encrypt(&data, offset, n)
+
+		offset += n
 
 		// Writing data to output file
 		_, err = writer.Write(data)
