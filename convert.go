@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 )
 
 const (
@@ -26,6 +25,7 @@ func ConvertFile(in, out string) (bool, int, error) {
 	if err != nil {
 		return false, -1, err
 	}
+	outFile.Truncate(0)
 
 	// Creating buffer
 	buffer := make([]byte, BUFFER_SIZE)
@@ -52,7 +52,7 @@ func ConvertFile(in, out string) (bool, int, error) {
 		// Writing data to output file
 		_, err = writer.Write(data)
 		if err != nil {
-			fmt.Println("Warning: Unexpected error -> " + err.Error())
+			PrintChannel <- fmt.Sprintf("Warning: Unexpected error -> " + err.Error())
 			return false, -1, err
 		}
 	}
@@ -61,13 +61,9 @@ func ConvertFile(in, out string) (bool, int, error) {
 }
 
 func Convert(in string) (bool, int, error) {
-	fmt.Printf("Converting %s ...\n", in)
-	start := time.Now()
-	defer func() {
-		fmt.Println("Time elapsed: ", time.Since(start))
-	}()
+	PrintChannel <- fmt.Sprintf("Converting %s ...", in)
 	if strings.HasSuffix(in, ".flac") || strings.HasSuffix(in, ".mp3") {
-		fmt.Printf("%s has a suffix of .flac / .mp3, assuming already converted.\n", in)
+		PrintChannel <- fmt.Sprintf("%s has a suffix of .flac / .mp3, assuming already converted.", in)
 		return true, 0, nil
 	} else if strings.HasSuffix(in, ".qmcflac") {
 		return ConvertFile(in, strings.TrimSuffix(in, ".qmcflac")+".flac")
@@ -76,7 +72,7 @@ func Convert(in string) (bool, int, error) {
 	} else if strings.HasSuffix(in, ".qmc3") {
 		return ConvertFile(in, strings.TrimSuffix(in, ".qmc3")+".mp3")
 	} else {
-		fmt.Println("Unrecognised file suffix in ", in, ", ignored.")
+		PrintChannel <- fmt.Sprint("Unrecognised file suffix in ", in, ", ignored.")
 		return true, 0, nil
 	}
 }
