@@ -36,7 +36,7 @@ func main() {
 	dataAmount := 0
 
 	if stat.IsDir() {
-		filepath.Walk(args[1], func(path string, info os.FileInfo, err error) error {
+		filepath.Walk(pathName, func(path string, info os.FileInfo, err error) error {
 			if err != nil || info.IsDir() {
 				PrintChannel <- fmt.Sprint(err)
 				return err
