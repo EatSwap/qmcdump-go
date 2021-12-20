@@ -21,11 +21,12 @@ func main() {
 	Welcome()
 	go PrintSomething()
 	args := os.Args
-	if len(args) == 1 {
-		PrintChannel <- fmt.Sprintf("Usage: %s <FILE/FOLDER>\n", args[0])
-		os.Exit(1)
+	pathName := "."
+	if len(args) > 1 {
+		pathName = args[1]
 	}
-	stat, err := os.Stat(args[1])
+	PrintChannel <- "Reading encrypted files from " + pathName + "\n"
+	stat, err := os.Stat(pathName)
 	if err != nil {
 		PrintChannel <- fmt.Sprint(err)
 		os.Exit(1)
